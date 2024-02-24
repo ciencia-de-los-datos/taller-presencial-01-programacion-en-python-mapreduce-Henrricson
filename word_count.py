@@ -6,7 +6,6 @@ import fileinput # permite iterar y operar en archivos
 def load_input(input_directory):
     sequence=[] # lista vacia 
     filenames = glob.glob(input_directory + "/*") # lee el contenido del directorio
-    print(filenames)
 
     with fileinput.input (files=(filenames)) as f: # abre los archivos y con el with cierra los archivos
         for line in f:
@@ -22,6 +21,7 @@ def mapper(sequence):
         words=text.split() # separa las palabras y quedan alojadas  en una lista 
         for word in words:
             word=word.replace(",","")
+            word=word.replace(".","")
             word=word.lower()
             new_sequence.append((word,1))# aloja la dupla en una lista, en este caso la palabra y el numero 1
     return new_sequence
@@ -36,11 +36,11 @@ def reducer(sequence):
     diccionario={}
     for key,value in sequence:
         if key not in diccionario.keys():
-            diccionario[key]=[]
-        diccionario[key].append(value)
+            diccionario[key]=0
+        diccionario[key]+=value
     new_sequence=[]
     for key, value in diccionario.items():
-        tupla=(key,sum(value))
+        tupla=(key,value)
         new_sequence.append(tupla)
     return new_sequence
         
@@ -55,7 +55,7 @@ def create_output_directory(output_directory):
 
 
 def save_output(output_directory, sequence):
-    with open(output_directory + "/part-0000", "w") as file:
+    with open(output_directory + "/part-00000", "w") as file:
         for key, value in sequence:
             file.write(f"{key}\t{value}\n")
    
